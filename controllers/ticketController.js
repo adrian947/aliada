@@ -17,7 +17,7 @@ const newTicket = async (req, res) => {
 const getTickets = async (req, res) => {
   try {
     const resp = await query(
-      `SELECT status, description, name_user, surname_user, observation, date, name, email, phone 
+      `SELECT tickets.id, status, description, name_user, surname_user, observation, date, name, email, phone 
        from tickets left join operators on tickets.operator_id = operators.id`
     );
 
@@ -29,34 +29,72 @@ const getTickets = async (req, res) => {
 
 const updateTicket = async (req, res) => {
   const { id } = req.params;
+
   const { status, observation, operator_id } = req.body;
 
-  const movementsVerify = await query(
-    "SELECT * FROM movements WHERE user_id = ? AND id = ? ",
-    [req.user[0].id, id]
-  );
-
-  if (movementsVerify.length === 0) {
-    return res.status(403).json({ msg: "you not have permission" });
-  }
-
-  const newData = {
-    concepts,
-    amount,
-  };
-
-  await query("UPDATE movements set ? WHERE id = ?", [newData, id]);
-  const movements = await query("SELECT * FROM movements WHERE user_id = ?", [
-    req.user[0].id,
+  const verifyTicket = await query("SELECT * FROM tickets WHERE  id = ? ", [
+    id,
   ]);
 
-  return res
-    .status(200)
-    .json({ msg: "Movement added successfully", movement: movements });
+  if (!verifyTicket.length) {
+    return res.status(400).json({ msg: "El ticket no existe" });
+  }
+
+  if (!req.body.operator_id)
+    return res
+      .status(401)
+      .json({ msg: "Primero de registrarte como operador" });
+
+  const UpdateField = async () => {
+    const resp = await query(
+      `UPDATE tickets set ? WHERE id = ?; 
+       SELECT tickets.id, status, description, name_user, surname_user, observation, date, name, email, phone 
+       from tickets left join operators on tickets.operator_id = operators.id WHERE tickets.id = ?`,
+      [{ status, observation, operator_id }, id, id]
+    );
+
+    return res.status(200).json({ msg: "Ticket Actualizado", data: resp[1] });
+  };
+
+  if (req.body.operator_id !== verifyTicket[0].operator_id) {
+    if (verifyTicket[0].operator_id && req.operator[0].user_key === 1) {
+      UpdateField();
+    } else if (!verifyTicket[0].operator_id) {
+      UpdateField();
+    } else {
+      return res
+        .status(401)
+        .json({ msg: "No estas autorizado a cambiar el operador" });
+    }
+  } else {
+    UpdateField();
+  }
+};
+
+const deleteTicket = async (req, res) => {
+  const { id } = req.params;
+
+  const verifyTicket = await query("SELECT * FROM tickets WHERE  id = ? ", [
+    id,
+  ]);
+
+  if (!verifyTicket.length) {
+    return res.status(400).json({ msg: "El ticket no existe" });
+  }
+
+  if (req.operator[0].user_key !== 1) {
+    return res
+      .status(401)
+      .json({ msg: "No estas autorizado a eliminar el ticket" });
+  }
+
+  await query("DELETE FROM tickets WHERE id = ?", [id]);
+  return res.status(200).json({ msg: "Ticket eliminado" });
 };
 
 module.exports = {
   newTicket,
   getTickets,
   updateTicket,
+  deleteTicket,
 };

@@ -3,6 +3,12 @@ const bcrypt = require("bcryptjs");
 const token = require("../helpers/token");
 
 const newOperator = async (req, res) => {
+  if (req.operator[0].user_key !== 1) {
+    return res
+      .status(401)
+      .json({ msg: "no tienes permisos para realizar esta accion" });
+  }
+  
   const operator = await query(`SELECT * FROM operators WHERE email = ?`, [
     req.body.email,
   ]);
