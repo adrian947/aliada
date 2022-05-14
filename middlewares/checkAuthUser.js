@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const query = require("../DB/config");
 
-const checkAuth = async (req, res, next) => {
+const checkAuthUser = async (req, res, next) => {
   if (
     req.headers.authorization &&
     req.headers.authorization.startsWith("Bearer")
@@ -12,16 +12,16 @@ const checkAuth = async (req, res, next) => {
       const decode = jwt.verify(token, process.env.SECRET_KEY);
 
       req.operator = await query(
-        `SELECT DISTINCT (id), user_key FROM operators WHERE id = ${decode.id}`
+        `SELECT DISTINCT (id), type FROM operators WHERE id = ${decode.id}`
       );
 
       return next();
     } catch (error) {
-      return res.status(404).json({ msg: "Invalid token" });
+      return res.status(404).json({ msg: "Token invalido" });
     }
   } else {
-    return res.status(401).json({ msg: "Invalid token not sent" });
+    return res.status(401).json({ msg: "Token invalido o no enviado" });
   }
 };
 
-module.exports = checkAuth;
+module.exports = checkAuthUser;

@@ -3,18 +3,12 @@ const bcrypt = require("bcryptjs");
 const token = require("../helpers/token");
 
 const newOperator = async (req, res) => {
-  if (req.operator[0].user_key !== 1) {
-    return res
-      .status(401)
-      .json({ msg: "no tienes permisos para realizar esta accion" });
-  }
-  
   const operator = await query(`SELECT * FROM operators WHERE email = ?`, [
     req.body.email,
   ]);
 
   if (operator.length > 0) {
-    return res.status(401).json({ msg: "Operador ya fue registrado" });
+    return res.status(401).json({ msg: "Usuario ya fue registrado" });
   }
 
   const salt = bcrypt.genSaltSync(10);
@@ -24,7 +18,7 @@ const newOperator = async (req, res) => {
 
   await query("INSERT INTO operators SET ?", [req.body]);
 
-  res.status(200).json({ msg: "Operador creado con exito" });
+  res.status(200).json({ msg: "Usuario creado con exito" });
 };
 
 const loginOperator = async (req, res) => {
@@ -47,17 +41,31 @@ const loginOperator = async (req, res) => {
     return res.status(401).json({ msg: "Usuario o password incorrecto" });
   }
 
-  operator.user_key = operator.user_key === 0 ? false : true;
-
   res.status(200).json({
     name: operator.name,
     email: operator.email,
-    user_key: operator.user_key,
-    token: token(operator.id, operator.user_key),
+    type: operator.type,
+    token: token(operator.id, operator.type),
   });
+};
+
+const getOperator = async (req, res) => {
+  try {
+    let operator = await query(
+      `SELECT name, email, type FROM operators WHERE id = ?`,
+      [req.operator[0].id]
+    );
+    operator = operator[0];
+    res.status(200).json({
+      operator,
+    });
+  } catch (error) {
+    return res.status(401).json({ msg: "Token invalido" });
+  }
 };
 
 module.exports = {
   newOperator,
   loginOperator,
+  getOperator,
 };
