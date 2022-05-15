@@ -42,6 +42,7 @@ const loginOperator = async (req, res) => {
   }
 
   res.status(200).json({
+    id: operator.id,
     name: operator.name,
     email: operator.email,
     type: operator.type,
@@ -52,7 +53,7 @@ const loginOperator = async (req, res) => {
 const getOperator = async (req, res) => {
   try {
     let operator = await query(
-      `SELECT name, email, type FROM operators WHERE id = ?`,
+      `SELECT name, email ,id, type FROM operators WHERE id = ?`,
       [req.operator[0].id]
     );
     operator = operator[0];

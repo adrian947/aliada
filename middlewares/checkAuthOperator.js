@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const query = require("../DB/config");
 
-const checkAuthOperator = async (req, res, next) => {
+const checkAuthOperator = async (req, res, next) => {  
   if (
     req.headers.authorization &&
     req.headers.authorization.startsWith("Bearer")

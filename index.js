@@ -4,10 +4,10 @@ const cors = require("cors");
 const routerOperator = require("./routes/operator");
 const routerTicket = require("./routes/ticket");
 
-app.use(express.json())
 app.use(cors());
 
 
+app.use(express.json({ extended: true }));
 
 app.use("/ticket", routerTicket);
 app.use("/operator", routerOperator);

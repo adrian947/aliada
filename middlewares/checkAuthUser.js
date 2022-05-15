@@ -7,8 +7,7 @@ const checkAuthUser = async (req, res, next) => {
     req.headers.authorization.startsWith("Bearer")
   ) {
     try {
-      const token = req.headers.authorization.split(" ")[1];
-
+      const token = req.headers.authorization.split(" ")[1];      
       const decode = jwt.verify(token, process.env.SECRET_KEY);
 
       req.operator = await query(
