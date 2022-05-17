@@ -20,7 +20,7 @@ const newTicket = async (req, res) => {
 const getTickets = async (req, res) => {
   try {
     const resp = await query(
-      `SELECT tickets.id, status, description, name_user, surname_user, observation, date, name, type, email 
+      `SELECT tickets.id, status, description, name_user, surname_user, observation, date, name, type, email, operator_id 
        from tickets left join operators on tickets.operator_id = operators.id`
     );
 
@@ -43,10 +43,10 @@ const updateTicket = async (req, res) => {
 
   verifyTicket = verifyTicket[0];
 
-  if (!req.body.operator_id)
-    return res
-      .status(401)
-      .json({ msg: "Primero de registrarte como operador" });
+  // if (!req.body.operator_id)
+  //   return res
+  //     .status(401)
+  //     .json({ msg: "Primero de registrarte como operador" });
 
   const UpdateField = async () => {
     const resp = await query(

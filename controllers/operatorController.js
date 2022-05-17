@@ -65,8 +65,21 @@ const getOperator = async (req, res) => {
   }
 };
 
+const getOperators = async (req, res) => {  
+  try {
+    const operators = await query(
+      `SELECT name, id FROM operators WHERE type = 'operator_key' OR type = 'operator'`
+    );
+
+    return res.status(200).json(operators);
+  } catch (error) {
+    return res.status(401).json({ msg: "Token invalido" });
+  }
+};
+
 module.exports = {
   newOperator,
   loginOperator,
   getOperator,
+  getOperators,
 };
