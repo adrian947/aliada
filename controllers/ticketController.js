@@ -20,6 +20,7 @@ const newTicket = async (req, res) => {
 const getTickets = async (req, res) => {
   const { page, status } = req.params;
 
+  //*return all tickets
   try {
     if (status === "Todos") {
       const resp = await query(
@@ -31,7 +32,8 @@ const getTickets = async (req, res) => {
       const totalRegister = await query(`SELECT count(*) total from tickets`);
       return res.status(200).json({ resp, total: totalRegister[0].total });
     }
-
+  
+  //*return filter tickets by status  
     const resp = await query(
       `SELECT tickets.id, status, description, name_user, surname_user, observation, date, name, type, email, operator_id 
        from tickets left join operators on tickets.operator_id = operators.id WHERE tickets.status = ? 

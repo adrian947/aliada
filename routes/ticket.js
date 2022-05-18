@@ -1,8 +1,8 @@
 const express = require("express");
 const routerTicket = express.Router();
-const { getTickets, newTicket, updateTicket, deleteTicket } = require("../controllers/ticketController");
-const checkAuthOperator = require("../middlewares/checkAuthOperator");
 const checkAuthUser = require("../middlewares/checkAuthUser");
+const checkAuthOperator = require("../middlewares/checkAuthOperator");
+const { getTickets, newTicket, updateTicket, deleteTicket } = require("../controllers/ticketController");
 
 routerTicket.post("/",checkAuthUser, newTicket);
 routerTicket.get("/:page/:status",checkAuthOperator, getTickets);

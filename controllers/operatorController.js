@@ -3,6 +3,14 @@ const bcrypt = require("bcryptjs");
 const token = require("../helpers/token");
 
 const newOperator = async (req, res) => {
+  const { email, name, password } = req.body;
+
+  if ((email === "", name === "", password === "")) {
+    return res
+      .status(401)
+      .json({ msg: "Todos los campos deben ser completados" });
+  }
+
   const operator = await query(`SELECT * FROM operators WHERE email = ?`, [
     req.body.email,
   ]);
@@ -65,7 +73,7 @@ const getOperator = async (req, res) => {
   }
 };
 
-const getOperators = async (req, res) => {  
+const getOperators = async (req, res) => {
   try {
     const operators = await query(
       `SELECT name, id FROM operators WHERE type = 'operator_key' OR type = 'operator'`
