@@ -5,7 +5,7 @@ const checkAuthOperator = require("../middlewares/checkAuthOperator");
 const checkAuthUser = require("../middlewares/checkAuthUser");
 
 routerTicket.post("/",checkAuthUser, newTicket);
-routerTicket.get("/",checkAuthOperator, getTickets);
+routerTicket.get("/:page/:status",checkAuthOperator, getTickets);
 routerTicket.put("/:id",checkAuthOperator, updateTicket);
 routerTicket.delete("/:id",checkAuthOperator, deleteTicket);
 
