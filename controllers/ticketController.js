@@ -11,7 +11,7 @@ const newTicket = async (req, res) => {
 
     const id = resp[1];
 
-    res.status(200).json({ msg: "Reclamo ingresado con exito", id: id[0].id });
+    res.status(201).json({ msg: "Reclamo ingresado con exito", id: id[0].id });
   } catch (error) {
     res.status(403).json({ msg: error });
   }
@@ -73,7 +73,7 @@ const updateTicket = async (req, res) => {
       [{ status, observation, operator_id }, id, id]
     );
 
-    return res.status(200).json({ msg: "Ticket Actualizado", data: resp[1] });
+    return res.status(201).json({ msg: "Ticket Actualizado", data: resp[1] });
   };
 
   switch (req.operator[0].type) {
