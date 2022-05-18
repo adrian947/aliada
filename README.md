@@ -1,6 +1,8 @@
 # Aliada-Server🧹🧹🧹
+> Aliada Ticket is a challenge created for aliada.mx. **This is a problem that does not exist in aliada.**
 
 ---
+
 ### My portfolio 
 https://adrian-adducchio.netlify.app/
 ***
@@ -11,9 +13,6 @@ const aliada = {
   tools:[Node, Express, MySql]
 }
 ```
-> Aliada Ticket is a challenge created for aliada.mx. **This is a problem that does not exist in aliada.**
-
-
 --- 
 ### Getting started
 - npm i
