@@ -15,14 +15,14 @@ let query = function (sql, values) {
       if (err) {
         reject(err);
       } else {
-        console.log("DB CONECTED");
+        console.log("DB CONNECTED");
         connection.query(sql, values, (err, rows) => {
           if (err) {
             reject(err);
           } else {
             resolve(rows);
           }
-          // end sessión
+          //* end sessión
           connection.release();
         });
       }

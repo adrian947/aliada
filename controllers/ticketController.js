@@ -1,5 +1,7 @@
 const query = require("../db/config");
 
+
+//* create new ticket
 const newTicket = async (req, res) => {
 
   const { description, name_user, surname_user, email_user } = req.body;
@@ -18,6 +20,7 @@ const newTicket = async (req, res) => {
   }
 };
 
+//* get tickets filter (Limit 3)
 const getTickets = async (req, res) => {
   const { page, status } = req.params;
 
@@ -26,7 +29,9 @@ const getTickets = async (req, res) => {
     if (status === "Todos") {
       const resp = await query(
         `SELECT tickets.id, status, description, name_user, surname_user, email_user, observation, date, name, type, email, operator_id 
-         from tickets left join operators on tickets.operator_id = operators.id LIMIT ?, ?`,
+         from tickets 
+         left join operators on tickets.operator_id = operators.id 
+         LIMIT ?, ?`,
         [parseInt(page) * 3, 3]
       );
 
@@ -37,7 +42,9 @@ const getTickets = async (req, res) => {
   //*return filter tickets by status  
     const resp = await query(
       `SELECT tickets.id, status, description, name_user, surname_user, email_user, observation, date, name, type, email, operator_id 
-       from tickets left join operators on tickets.operator_id = operators.id WHERE tickets.status = ? 
+       from tickets 
+       left join operators on tickets.operator_id = operators.id 
+       WHERE tickets.status = ? 
        LIMIT ${parseInt(page) * 3} , 3`,
        [status]
     );
@@ -53,6 +60,7 @@ const getTickets = async (req, res) => {
   }
 };
 
+//* update ticket validating the type of operator
 const updateTicket = async (req, res) => {
   const { id } = req.params;
 
@@ -70,7 +78,9 @@ const updateTicket = async (req, res) => {
     const resp = await query(
       `UPDATE tickets set ? WHERE id = ?; 
        SELECT tickets.id, status, description, name_user, surname_user, observation, date, name, email 
-       from tickets left join operators on tickets.operator_id = operators.id WHERE tickets.id = ?`,
+       from tickets 
+       left join operators on tickets.operator_id = operators.id 
+       WHERE tickets.id = ?`,
       [{ status, observation, operator_id }, id, id]
     );
 

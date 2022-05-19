@@ -49,6 +49,7 @@ const loginOperator = async (req, res) => {
   });
 };
 
+//* returns the logged operator if the token is valid
 const getOperator = async (req, res) => {
   try {
     let operator = await query(
@@ -64,6 +65,8 @@ const getOperator = async (req, res) => {
   }
 };
 
+
+//* return all operators
 const getOperators = async (req, res) => {
   try {
     const operators = await query(
