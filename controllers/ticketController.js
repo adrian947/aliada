@@ -1,12 +1,13 @@
 const query = require("../db/config");
 
 const newTicket = async (req, res) => {
-  const { description, name_user, surname_user } = req.body;
+
+  const { description, name_user, surname_user, email_user } = req.body;
 
   try {
     const resp = await query(
       "INSERT INTO tickets SET ?; SELECT LAST_INSERT_ID() as id",
-      [{ description, name_user, surname_user }]
+      [{ description, name_user, surname_user, email_user }]
     );
 
     const id = resp[1];
@@ -24,7 +25,7 @@ const getTickets = async (req, res) => {
   try {
     if (status === "Todos") {
       const resp = await query(
-        `SELECT tickets.id, status, description, name_user, surname_user, observation, date, name, type, email, operator_id 
+        `SELECT tickets.id, status, description, name_user, surname_user, email_user, observation, date, name, type, email, operator_id 
          from tickets left join operators on tickets.operator_id = operators.id LIMIT ?, ?`,
         [parseInt(page) * 3, 3]
       );
@@ -35,7 +36,7 @@ const getTickets = async (req, res) => {
   
   //*return filter tickets by status  
     const resp = await query(
-      `SELECT tickets.id, status, description, name_user, surname_user, observation, date, name, type, email, operator_id 
+      `SELECT tickets.id, status, description, name_user, surname_user, email_user, observation, date, name, type, email, operator_id 
        from tickets left join operators on tickets.operator_id = operators.id WHERE tickets.status = ? 
        LIMIT ${parseInt(page) * 3} , 3`,
        [status]

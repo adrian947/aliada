@@ -1,22 +1,13 @@
 const query = require("../db/config");
 const bcrypt = require("bcryptjs");
 const token = require("../helpers/token");
+const validateNewOperator = require("../helpers/validateNewOperator");
 
 const newOperator = async (req, res) => {
-  const { email, name, password } = req.body;
+  const respValidator = await validateNewOperator(req.body);
 
-  if ((email === "", name === "", password === "")) {
-    return res
-      .status(401)
-      .json({ msg: "Todos los campos deben ser completados" });
-  }
-
-  const operator = await query(`SELECT * FROM operators WHERE email = ?`, [
-    req.body.email,
-  ]);
-
-  if (operator.length > 0) {
-    return res.status(401).json({ msg: "Usuario ya fue registrado" });
+  if (!respValidator.ok) {
+    return res.status(401).json({ msg: respValidator.msg });
   }
 
   const salt = bcrypt.genSaltSync(10);
